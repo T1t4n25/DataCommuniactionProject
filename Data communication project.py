@@ -14,9 +14,9 @@ def sender_CRC(message, cipher): # Zeyad Hemeda Work
         bit_arr1 = [format(ord(i), '08b') for i in test_str]
 
         bit_arr = [i + empty_7bits for i in bit_arr1]
-
+        # here we calculate the crc bits and save it to an array to be used later
         crc_bits = [format(int(i, 2) % int(divisor, 2), '08b') for i in bit_arr]
-
+        # the final message bits embedded with crc bits
         bit_arr = [int(bit_arr1[i] + crc_bits[i], 2) for i in range(len(bit_arr1))]
 
         toBeSent[m] = bit_arr
