@@ -1,14 +1,13 @@
 divisor = '1011'
-empty_7bits = '0000000'
+
+
 def sender(message): # Haytham Work
     pass
-
-divisor = '1011'
-
 
 def xor(a, b):# Zeyad Hemeda
     result = []
 
+    # noinspection PyArgumentList
     for i in range(1, len(b)):
         if a[i] == b[i]:
             result.append('0')
@@ -45,22 +44,20 @@ def mod2div(dividend, divisor2):# zeyad Hemeda
 def sender_crc(message, cipher):  # Zeyad Hemeda Work
     to_be_sent = [message, cipher]
     for m in range(len(to_be_sent)):
-        # initializing string 
+        # initializing string
         test_str = str(to_be_sent[m].encode('utf-8'))
 
         print("The original string is : " + test_str)
         # convert from string to int
         bit_arr1 = [ord(i) for i in test_str]
-        # shift the bits to clear room for crc bits
+        # shift the bits to get the remainder
         bit_arr = [format(i << 3, '08b') for i in bit_arr1]
-        print('appended',bit_arr)
-        # here we calculate the crc bits and remove excess bits
+        # here we calculate the crc bits
         crc_bits = [mod2div(i, divisor) for i in bit_arr]
 
         # the final message bits embedded with crc bits
         bit_arr = [format(bit_arr1[i], '08b') + crc_bits[i] for i in range(len(bit_arr1))]
         to_be_sent[m] = bit_arr
-        print('to be sent',to_be_sent[m])
         # send to receiver CRC
         for i in range(len(to_be_sent[m])):
             x = receiver_crc(to_be_sent[m][i], m)
@@ -78,15 +75,20 @@ def receiver_crc(receivedMessage, flag):  # Zeyad Hemeda Work
     print(receivedMessage, flag)
     if (int(mod2div(receivedMessage, divisor), 2) == 0) and flag == 0:
         print(1)
-        correct_bytes.append([receivedMessage])
+        correct_bytes.append(int(receivedMessage, 2) >> 3)
         return 1
     elif (int(mod2div(receivedMessage, divisor), 2) == 0) and flag == 1:
         print(2)
-        correct_cipher.append([receivedMessage])
+        correct_cipher.append(int(receivedMessage, 2) >> 3)
         return 1
     elif int(mod2div(receivedMessage, divisor), 2) != 0:  # packet error not correct
         print(mod2div(receivedMessage, divisor))
         return 0
+def bin_to_string(original_message, cipher):
+    print(original_message)
+    string1 = ''.join(chr(i) for i in original_message)
+    string2 = ''.join(chr(i) for i in cipher)
+    return string1, string2
 
 
 def receiver(message, cipher): # not determined
@@ -94,4 +96,6 @@ def receiver(message, cipher): # not determined
 
 def welcome_page(): # not determined
     pass
-
+sender_crc('ahmed', 'kh')
+message, sipher = bin_to_string(correct_bytes, correct_cipher)
+print(message, sipher)
