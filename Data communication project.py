@@ -2,7 +2,23 @@ divisor = '1011'
 
 
 def sender(message): # Haytham Work
-    pass
+#   Convert Message to Bytes:
+    messageInByte=message.encode('utf-8')
+
+    # Convert Bytes to Binary :
+    messageInBinary=[format(i, '08b') for i in messageInByte]
+#  Make for loop to calc every byte
+    crc_bits = [mod2div(i, divisor) for i in messageInBinary]
+
+# Embed CRC Bits into the Message Bits:
+    crcMessage = [format(messageInByte[i], '08b') + crc_bits[i] for i in range(len(messageInByte))]
+
+    return crcMessage
+
+
+# message = "Haytham "  # Replace this with your message
+# encodedMessage = sender(message)
+# print("Encoded Message:", encoded_message)
 
 def xor(a, b):# Zeyad Hemeda
     result = []
