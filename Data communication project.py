@@ -1,24 +1,31 @@
+from cryptography.fernet import Fernet
 divisor = '1011'
 
 
 def sender(message): # Haytham Work
-#   Convert Message to Bytes:
-    messageInByte=message.encode('utf-8')
 
-    # Convert Bytes to Binary :
-    messageInBinary=[format(i, '08b') for i in messageInByte]
-#  Make for loop to calc every byte
-    crc_bits = [mod2div(i, divisor) for i in messageInBinary]
+    # Generate a random encryption key
+    key = Fernet.generate_key()
 
-# Embed CRC Bits into the Message Bits:
-    crcMessage = [format(messageInByte[i], '08b') + crc_bits[i] for i in range(len(messageInByte))]
+    # Create a Fernet cipher with the generated key
+    cipher = Fernet(key)
 
-    return crcMessage
+    # Convert the text to bytes
+    text_bytes = message.encode('utf-8')
+
+    # Encrypt the text
+    encrypted_text = cipher.encrypt(text_bytes)
+
+    return key, encrypted_text
+
+# Usage 
+text_to_encrypt = "Hello, this is a secret message."
+key, encrypted_message = sender(text_to_encrypt)
+print("Original Text: ", text_to_encrypt)
+print("Encrypted Text: ", encrypted_message)
 
 
-# message = "Haytham "  # Replace this with your message
-# encodedMessage = sender(message)
-# print("Encoded Message:", encoded_message)
+#################################################################################################################
 
 def xor(a, b):# Zeyad Hemeda
     result = []
@@ -57,8 +64,8 @@ def mod2div(dividend, divisor2):# zeyad Hemeda
     return checkword
 
 
-def sender_crc(message, cipher):  # Zeyad Hemeda Work
-    to_be_sent = [message, cipher]
+def sender_crc(message, encrypted_text,key):  # Zeyad Hemeda Work
+    to_be_sent = [message, encrypted_text]
     for m in range(len(to_be_sent)):
         # initializing string
         test_str = str(to_be_sent[m].encode('utf-8'))
@@ -107,7 +114,7 @@ def bin_to_string(original_message, cipher):
     return string1, string2
 
 
-def receiver(message, cipher): # not determined
+def receiver(message, encrypted_text): # not determined
     pass
 
 def welcome_page(): # not determined
