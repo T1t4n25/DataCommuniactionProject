@@ -115,6 +115,7 @@ def welcome_page(): # Zeyad ElHarty and Saed Ragheb work
     pass
 
 if __name__ == "__main__":
+    welcome_page()
     messege = 'mahmoud'
     sender(messege)
     print("messege", bin_to_string(correct_bytes))
