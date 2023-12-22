@@ -115,6 +115,7 @@ def receiver(encrypted_text, cipher): # Zeyad Mohsen Work
 def welcome_page(): # Zeyad ElHarty and Saed Ragheb work
     pass
 
+
 if __name__ == "__main__":
     welcome_page()
     messege = 'mahmoud'
