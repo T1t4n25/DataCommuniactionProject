@@ -108,7 +108,6 @@ def receiver_crc(receivedMessage, flag):  # Zeyad Hemeda Work
     
 #########################################################################################
 
-
 def receiver(encrypted_text, cipher): # Zeyad Mohsen Work
     pass
 
