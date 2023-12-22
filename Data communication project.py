@@ -77,6 +77,7 @@ def sender_crc(message, cipher):  # Zeyad Hemeda Work
         # the final message bits embedded with crc bits
         bit_arr = [format(bit_arr1[i], '08b') + crc_bits[i] for i in range(len(bit_arr1))]
         to_be_sent[m] = bit_arr
+
         # send to receiver CRC (still needs work not finished)
         for i in range(len(to_be_sent[m])):
             x = receiver_crc(to_be_sent[m][i], m)
@@ -108,7 +109,7 @@ def receiver_crc(receivedMessage, flag):  # Zeyad Hemeda Work
 #########################################################################################
 
 
-def receiver(message, encrypted_text): # Zeyad Mohsen Work
+def receiver(encrypted_text, cipher): # Zeyad Mohsen Work
     pass
 
 def welcome_page(): # Zeyad ElHarty and Saed Ragheb work
