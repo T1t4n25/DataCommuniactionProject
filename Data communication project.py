@@ -92,16 +92,16 @@ correct_cipher = []
 
 
 def receiver_crc(receivedMessage, flag):  # Zeyad Hemeda Work
-
-    if (int(mod2div(receivedMessage, divisor), 2) == 0) and flag == 0:
+    remainder = int(mod2div(receivedMessage, divisor), 2)
+    if (remainder == 0) and flag == 0:
         correct_bytes.append(int(receivedMessage, 2) >> 3)
         return 1
     
-    elif (int(mod2div(receivedMessage, divisor), 2) == 0) and flag == 1:
+    elif (remainder == 0) and flag == 1:
         correct_cipher.append(int(receivedMessage, 2) >> 3)
         return 1
     
-    elif int(mod2div(receivedMessage, divisor), 2) != 0:  # packet error not correct
+    elif remainder != 0:  # packet error not correct
         print(mod2div(receivedMessage, divisor))
         return 0
     
