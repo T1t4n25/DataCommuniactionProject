@@ -1,6 +1,13 @@
+import base64
 from cryptography.fernet import Fernet
+import pyfiglet
+from termcolor import colored
+from itertools import cycle
+
 divisor = '1011'
 
+correct_cipher = []
+correct_bytes = []
 
 def xor(a, b):# Zeyad Hemeda
     result = []
@@ -38,30 +45,32 @@ def mod2div(dividend, divisor2):# zeyad Hemeda
     checkword = tmp
     return checkword
 
-# use this to convert the messege from binary to string
+# use this to convert the messege from binary to bytes
 def bin_to_string(to_convert):# Zeyad Hemeda
-    print(to_convert)
-    string = ''.join(chr(i) for i in to_convert)
+    string = "".join(chr(byte) for byte in to_convert)
+    print('bin to string out: ',string)
     return string
 
 def sender(message): # Haytham Work
 
     # Generate a random encryption key
-    key = Fernet.generate_key()
-
-    # Create a Fernet cipher with the generated key
-    cipher = Fernet(key)
+    key = 'secretkey'
+    key_byte = key.encode('utf-8')
+    print("cipher1", key_byte)
+    key_base = base64.urlsafe_b64encode(key_byte.ljust(32)[:32])
+    # Create a Fernet cipher with the key
+    cipher = Fernet(key_base)
     print("Original Text: ", message)
     # Convert the text to bytes
     text_bytes = message.encode('utf-8')
-    print("Encoded Text: ", text_bytes)
+    print("Encoded Text: ", cipher)
     # Encrypt the text
     encrypted_text = cipher.encrypt(text_bytes)
     print("Encrypted Text: ", encrypted_text)
 
-    sender_crc(encrypted_text, cipher)
+    sender_crc(encrypted_text, key_byte)
 
-#################################################################################################################
+###################################################################
 
 def sender_crc(message, cipher):  # Zeyad Hemeda Work
     to_be_sent = [message, cipher]
@@ -88,11 +97,13 @@ def sender_crc(message, cipher):  # Zeyad Hemeda Work
 
 ###############################################################
 # these contain the transmitted messege as bytes
-correct_bytes = []
-correct_cipher = []
+
+
 
 
 def receiver_crc(receivedMessage, flag):  # Zeyad Hemeda Work
+    global correct_cipher
+    global correct_bytes
     remainder = int(mod2div(receivedMessage, divisor), 2)
     if (remainder == 0) and flag == 0:
         correct_bytes.append(int(receivedMessage, 2) >> 3)
@@ -109,16 +120,47 @@ def receiver_crc(receivedMessage, flag):  # Zeyad Hemeda Work
 #########################################################################################
 
 def receiver(encrypted_text, cipher): # Zeyad Mohsen Work
-    pass
+    cipher_bytes = cipher.encode('utf-8')
+    cipher_bytes = base64.urlsafe_b64encode(cipher_bytes.ljust(32)[:32])
+    cipher_suite = Fernet(cipher_bytes)
+    # Decrypt the encrypted text
+    decrypted_text = cipher_suite.decrypt(encrypted_text)
+
+    # Convert the decrypted bytes back to a string
+    decrypted_text_str = decrypted_text.decode('utf-8')
+
+    print("Decrypted Text: ", decrypted_text_str)
 
 def welcome_page(): # Zeyad ElHarty and Saed Ragheb work
-    pass
+    member_names = [
+        'Z i a d  H e m e d a',
+        'S a m i  E m a d',
+        'H a i t h a m  M o h a m e d',
+        'S a e e d  R a g h e b ',
+        'Z i a d  H e i k a l',
+        'Z i a d  A l - H a r t e y'
+    ]
+    colors = cycle(['red', 'green', 'blue'])
+    font = pyfiglet.Figlet(font='small', width= 100)
+    welcome_message = ["W e l c o m e  t o", "C R C  \nS i m u l a t i o n", "T e a m M e m b e r s"]
+    banner = []
+    banner = [font.renderText(i) for i in welcome_message]
+
+
+    for i in banner:
+        print(colored(i, next(colors))) 
+
+    print(" \n".join(member_names))
+
+    user_message = input("Enter your message: ")
+    print("User Message:", user_message)
+    sender(user_message)
+
 
 
 if __name__ == "__main__":
     welcome_page()
-    messege = 'mahmoud'
-    sender(messege)
-    print("messege", bin_to_string(correct_bytes))
-    print("cipher", bin_to_string(correct_cipher))
+    #print('cipher', correct_cipher)
+    receiver(bin_to_string(correct_bytes), bin_to_string(correct_cipher))
+    
 
