@@ -1,8 +1,10 @@
 import base64
+from random import choice, randint
 from cryptography.fernet import Fernet
 import pyfiglet
 from termcolor import colored
 from itertools import cycle
+from termcolor import colored
 
 divisor = '1011'
 
@@ -92,18 +94,29 @@ def sender_crc(message, cipher):  # Zeyad Hemeda Work
             x = receiver_crc(to_be_sent[m][i], m)
             if x != 1:
                 i = i - 1
-                print(f"Packet error at {m}, {i}, {x}")
+                print(f"\033[91m [*] Packet error at index : {m} {i}\033[0m")
+                print(f"\033[92m [*] Resending correct bits\033[0m")
 
 
 ###############################################################
-# these contain the transmitted messege as bytes
-
-
+def error_sim(bits_arr):
+    if choice([True, False]):
+        random_bit = randint(0, len(bits_arr) - 1)
+        packet_to_flip = list(bits_arr)
+        if packet_to_flip[random_bit] == '0':
+            packet_to_flip[random_bit] = '1'
+            bits_arr = ''.join(i for i in packet_to_flip)
+        else:
+            packet_to_flip[random_bit] = '0'
+            bits_arr = ''.join(i for i in packet_to_flip)
+    return bits_arr
 
 
 def receiver_crc(receivedMessage, flag):  # Zeyad Hemeda Work
     global correct_cipher
     global correct_bytes
+    global correct_bytes
+    receivedMessage = error_sim(receivedMessage)
     remainder = int(mod2div(receivedMessage, divisor), 2)
     if (remainder == 0) and flag == 0:
         correct_bytes.append(int(receivedMessage, 2) >> 3)
@@ -146,9 +159,8 @@ def welcome_page(): # Zeyad ElHarty and Saed Ragheb work
     banner = []
     banner = [font.renderText(i) for i in welcome_message]
 
-
     for i in banner:
-        print(colored(i, next(colors))) 
+        print(colored(i, next(colors), attrs=['bold'])) 
 
     print(" \n".join(member_names))
 
@@ -163,4 +175,3 @@ if __name__ == "__main__":
     #print('cipher', correct_cipher)
     receiver(bin_to_string(correct_bytes), bin_to_string(correct_cipher))
     
-
