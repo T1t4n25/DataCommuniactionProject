@@ -1,8 +1,8 @@
-from itertools import cycle
-from cryptography.fernet import Fernet
-from termcolor import colored
 from helper import *
+from cryptography.fernet import Fernet
+from itertools import cycle
 from random import randint, choice
+from termcolor import colored
 import pyfiglet
 divisor = '1011'
 
@@ -66,8 +66,6 @@ def welcome_page():
 
     print(colored(banner, next(colors)))  # type: ignore
 
-
-    
 
 if __name__ == "__main__":
     welcome_page()
